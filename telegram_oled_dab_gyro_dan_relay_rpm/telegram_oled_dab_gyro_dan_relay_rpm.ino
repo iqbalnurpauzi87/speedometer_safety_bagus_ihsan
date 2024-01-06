@@ -21,9 +21,12 @@ const char* ssid = "qwer";
 const char* password = "qwerty12";
 
 // Initialize Telegram BOT
+//iqbal
+String BOTtoken = "1613209666:AAFT_0VnhMW6pquy4n2RhnVwOySyMNymTq0";   // your Bot Token (Get from Botfather)
+String CHAT_ID = "1586166338";
 
-String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
-String CHAT_ID = "5401629065";
+//String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
+//String CHAT_ID = "5401629065";
 
 
 MPU6050 mpu(Wire);
@@ -57,7 +60,7 @@ bool ledState = LOW;
 
 
 char a, c, e, g, i, k;
-int b, d, f, h, j, l;
+int b, d, f, h, j, l, x;
 
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
@@ -106,6 +109,13 @@ void handleNewMessages(int numNewMessages) {
       bot.sendMessage(chat_id, welcome, "");
       sgiro=0;
          }
+         
+    if (text == "/lokasi") {
+ String welcome = "lokasi kendaraan anda di:.\n\n";
+      welcome += "https://www.google.com/maps?q=-6.587866,106.785255 \n";
+      bot.sendMessage(chat_id, welcome, "");
+      sgiro=0;
+         }
     if (text == "/machin_off") {
  String welcome = "SOS is HERE.\n\n";
       welcome += "hidupkan mesin? \n";
@@ -129,6 +139,42 @@ void handleNewMessages(int numNewMessages) {
       else{
         bot.sendMessage(chat_id, "LED is OFF", "");
       }
+    }
+    if (text == "/lokasi" or text == "lokasi") {
+      String welcome = "Lokasi kendaraan saat ini.\n\n";
+      welcome += "lokasi saat ini :   \n";
+      welcome += "https://maps.google.com/?q=";
+      welcome += a;
+      welcome += b;
+      welcome += c;
+      welcome += d; 
+      
+      welcome += ",";
+      welcome += f;
+      welcome += g;
+      welcome += h;
+//      
+      
+      welcome += " \n";
+ 
+ Serial.println("  ");  //
+ Serial.println("ini di pnggil lokasi");  //
+ Serial.println("  ");  //
+ Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+
+  
+ Serial.println("  ");  //
+ Serial.println("di pnggil lokasi selesai");  //
+ Serial.println("  ");  //
+        bot.sendMessage(chat_id, welcome, "");
+     
     }
   }
 }
@@ -195,7 +241,7 @@ void setup() {
 }
 
 void loop() {
-baca_serial();
+//baca_serial();
 readsensor();
 tampilan();
 kontrol();
@@ -269,7 +315,7 @@ void tampilan(){
   display.print(F("RPM : "));        // Start at top-left corner
   display.print(b, DEC);
   display.display();
-  Serial.println("test oke");
+  Serial.println("display oke");
   Serial.println(b);
 }
 
@@ -288,6 +334,7 @@ void kontrol(){
   }
 }
 void baca_serial(){
+  Serial.print("baca serial    ");
    while (Serial2.available() > 0) {
     a = Serial2.read();
     b = Serial2.parseInt();
@@ -295,26 +342,32 @@ void baca_serial(){
     d = Serial2.parseInt();
     e = Serial2.read();
     f = Serial2.parseInt();
-    g = Serial2.read();
-    h = Serial2.parseInt();
-    i = Serial2.read();
-    j = Serial2.parseInt();
-    k = Serial2.read();
-    l = Serial2.parseInt();
+    g = Serial2.read();  
+    h = Serial2.parseInt();  // disesuaikan dengan panjang data yg dikirim
+//    i = Serial2.read();
+//    j = Serial2.parseInt();
+//    k = Serial2.read();
+//    l = Serial2.parseInt();
   if(d==4) d=0;
-  Serial.println("RPM");
-  Serial.println(b);    //status alat
-  Serial.print("Lat");
-  Serial.println(d);  //latitude
-  Serial.print("lon");
-  Serial.println(f);    //lontitude
-//  Serial.println(g);
-//  Serial.println(h);    //statustombol
-//  Serial.println(i);
-//  Serial.println(j);    //statuspsu
-//  Serial.println(k);
-//  Serial.println(l);    //statuspsu
-//  Serial.println("");
-//  Serial.println("");
+  Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+//  Serial.print(i);
+//  Serial.print(j);    
+//  Serial.print(k);
+//  Serial.print(l);
+  Serial.print("");
+  Serial.println("");
   }
+  
+  Serial.println("baca serial done");
+}
+
+void onboardtele(){
+  
 }

@@ -1,5 +1,24 @@
+/*
+ * This ESP32 code is created by esp32io.com
+ *
+ * This ESP32 code is released in the public domain
+ *
+ * For more detail (instruction and wiring diagram), visit https://esp32io.com/tutorials/esp32-gps
+ */
 
 #include <TinyGPS++.h>
+
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define GPS_BAUDRATE 9600  // The default baudrate of NEO-6M is 9600
 
@@ -10,12 +29,24 @@ void setup() {
   Serial2.begin(GPS_BAUDRATE);  //serial 2 berhsil
 //  Serial1.begin(GPS_BAUDRATE);    
 
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
   Serial.println(F("ESP32 - GPS module"));
 }
 
 void loop() {
+  
   if (Serial2.available() > 0) {
     if (gps.encode(Serial2.read())) {
+  display.clearDisplay();
+  display.setTextSize(2);             // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  display.setCursor(0,0);             // Start at top-left corner
+
+  
       if (gps.location.isValid()) {
         Serial.print(F("- latitude: "));
         Serial.println(gps.location.lat(),6);
@@ -36,8 +67,11 @@ void loop() {
       if (gps.speed.isValid()) {
         Serial.print(gps.speed.kmph());
         Serial.println(F(" km/h"));
+        display.print(gps.speed.kmph(),0);
+        display.print(F("kmh"));
       } else {
         Serial.println(F("INVALID"));
+        display.print(F("INVALID"));
       }
 
       Serial.print(F("- GPS date&time: "));
@@ -60,7 +94,10 @@ void loop() {
       Serial.println();
     }
   }
-
+ 
+  display.display();
+  delay(500);
+ 
   if (millis() > 5000 && gps.charsProcessed() < 10)
     Serial.println(F("No GPS data received: check wiring"));
 }

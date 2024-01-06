@@ -13,7 +13,7 @@ TinyGPSPlus gps;
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
-int serialtopc = 1;   //pilih 1 untuk ke pc, dan 0 untuk ke esp32
+int serialtopc = 0;   //pilih 1 untuk ke pc, dan 0 untuk ke esp32
 
 void setup(){
   ss.begin(GPSBaud);
@@ -31,7 +31,7 @@ void loop(){
     if (gps.location.isUpdated()){
       float Latitude,Longitude;
 
-      if(serialtopc == 1){   // 1 untuk ke pc, dan 0 untuk ke esp32
+      if(serialtopc == 1){   //pilih 1 untuk ke pc, dan 0 untuk ke esp32
 
       Serial.print("Latitude= "); 
       Serial.print(gps.location.lat(), 6);
@@ -48,9 +48,9 @@ void loop(){
       Serial.print(gps.location.lng(), 6);
 
 
-//
-//
-//Serial.print("-6.580735b106.840332");
+
+
+Serial.print("-6.580735b106.840332");
 // Serial.print("a");  //rpm
 //  Serial.print(6);    //status alat
 //  Serial.print(".");    //lat

@@ -13,8 +13,10 @@ const char* password = "qwerty12";
 
 // Initialize Telegram BOT
 
-String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
-String CHAT_ID = "5401629065";
+String BOTtoken = "1613209666:AAFT_0VnhMW6pquy4n2RhnVwOySyMNymTq0";   // your Bot Token (Get from Botfather)
+String CHAT_ID = "1586166338";
+//String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
+//String CHAT_ID = "5401629065";
 
 #ifdef ESP8266
   X509List cert(TELEGRAM_CERTIFICATE_ROOT);

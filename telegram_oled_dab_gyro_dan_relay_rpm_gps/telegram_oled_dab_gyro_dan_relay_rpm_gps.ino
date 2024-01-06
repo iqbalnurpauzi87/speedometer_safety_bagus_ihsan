@@ -1,5 +1,5 @@
 #ifdef ESP32
-  #include <WiFi.h>
+  #include <WiFi.h>    //library wifi
 #else
   #include <ESP8266WiFi.h>
 #endif
@@ -8,12 +8,17 @@
 #include <ArduinoJson.h>
 
 #include <SPI.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include <Wire.h>   //untuk i2c
+#include <Adafruit_GFX.h>   //untuk display
+#include <Adafruit_SSD1306.h>  //display
 
 #include "Wire.h"
 #include <MPU6050_light.h>
+#include <TinyGPS++.h>      //gps library
+
+#define GPS_BAUDRATE 9600  // The default baudrate of NEO-6M is 9600
+
+TinyGPSPlus gps;  // the TinyGPS++ object
 
 
 // Replace with your network credentials
@@ -21,9 +26,12 @@ const char* ssid = "qwer";
 const char* password = "qwerty12";
 
 // Initialize Telegram BOT
+//iqbal
+String BOTtoken = "1613209666:AAFT_0VnhMW6pquy4n2RhnVwOySyMNymTq0";   // your Bot Token (Get from Botfather)
+String CHAT_ID = "1586166338";
 
-String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
-String CHAT_ID = "5401629065";
+//String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
+//String CHAT_ID = "5401629065";
 
 
 MPU6050 mpu(Wire);
@@ -49,11 +57,15 @@ WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
 
 // Checks for new messages every 1 second.
-int botRequestDelay = 10000;
+int botRequestDelay = 1000;
 unsigned long lastTimeBotRan;
 
 const int ledPin = 2;
 bool ledState = LOW;
+
+
+char a, c, e, g, i, k;
+int b, d, f, h, j, l, x;
 
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
@@ -74,7 +86,7 @@ void handleNewMessages(int numNewMessages) {
 
     String from_name = bot.messages[i].from_name;
 
-    if (text == "/start") {
+    if (text == "/start") {                                //jika ada request start dari telegram maka akan kirim..
       String welcome = "Welcome, " + from_name + ".\n";
       welcome += "Use the following commands to control your outputs.\n\n";
       welcome += "/led_on to turn GPIO ON \n";
@@ -102,6 +114,13 @@ void handleNewMessages(int numNewMessages) {
       bot.sendMessage(chat_id, welcome, "");
       sgiro=0;
          }
+         
+    if (text == "/lokasi") {          //jika ada permintaan lokasi maka kirim lokasi
+ String welcome = "lokasi kendaraan anda di:.\n\n";
+      welcome += "https://www.google.com/maps?q=-6.587866,106.785255 \n";
+      bot.sendMessage(chat_id, welcome, "");
+      sgiro=0;
+         }
     if (text == "/machin_off") {
  String welcome = "SOS is HERE.\n\n";
       welcome += "hidupkan mesin? \n";
@@ -126,13 +145,49 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, "LED is OFF", "");
       }
     }
+    if (text == "/lokasi" or text == "lokasi") {
+      String welcome = "Lokasi kendaraan saat ini.\n\n";
+      welcome += "lokasi saat ini :   \n";
+      welcome += "https://maps.google.com/?q=";
+      welcome += a;
+      welcome += b;
+      welcome += c;
+      welcome += d; 
+      
+      welcome += ",";
+      welcome += f;
+      welcome += g;
+      welcome += h;
+//      
+      
+      welcome += " \n";
+ 
+ Serial.println("  ");  //
+ Serial.println("ini di pnggil lokasi");  //
+ Serial.println("  ");  //
+ Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+
+  
+ Serial.println("  ");  //
+ Serial.println("di pnggil lokasi selesai");  //
+ Serial.println("  ");  //
+        bot.sendMessage(chat_id, welcome, "");
+     
+    }
   }
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200);                //serial yg digunakan
   Wire.begin();
- pinMode(pinkey, OUTPUT);
+ pinMode(pinkey, OUTPUT);              //settng untuk output
  pinMode(pinbuzzer, OUTPUT); 
  digitalWrite(pinkey, 1);
   #ifdef ESP8266
@@ -145,7 +200,7 @@ void setup() {
   
   // Connect to Wi-Fi
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);            //konnek ke wifi dengan ssid dan pass di atas
   #ifdef ESP32
     client.setCACert(TELEGRAM_CERTIFICATE_ROOT); // Add root certificate for api.telegram.org
   #endif
@@ -175,29 +230,35 @@ void setup() {
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
-  display.display();
+  display.display(); 
+  Serial2.begin(GPS_BAUDRATE);  //serial 2 berhsil
+//  Serial1.begin(GPS_BAUDRATE);    
+
+  Serial.println(F("ESP32 - GPS module"));
+
 
   
   display.clearDisplay();
 
   display.setTextSize(2);             // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  display.setTextColor(SSD1306_WHITE);        // Draw white text 
   display.setCursor(5,5);             // Start at top-left corner
-  display.println(F("HAI BAGUS"));
-  display.display();
+  display.println(F("HAI BAGUS"));                                       //tampilan awal
+  display.display(); 
   Serial.println("test oke");
 
 }
 
 void loop() {
-
-readsensor();
-tampilan();
-kontrol();
+//baca_serial();
+//readsensor();
+//tampilan();
+//kontrol();
+get_gps();                   // memanggil sub program get_gps di bawah
  delay(200);
 
   
-  if (millis() > lastTimeBotRan + botRequestDelay)  {
+  if (millis() > lastTimeBotRan + botRequestDelay)  {                    //scan bila ada pesan masuk dari telegrm
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
 
     while(numNewMessages) {
@@ -210,7 +271,7 @@ kontrol();
 
  
  
- if(statuskemiringan==1){
+ if(statuskemiringan==1){                 //jika terlalu miring, kirim pesan bahaya
   
      String welcome = "BAHAYA, \n";
       welcome += " MOTOR RUBUH NIH KECELAKAAN\n";
@@ -220,34 +281,33 @@ kontrol();
   
 }
 
-void readsensor(){
+void readsensor(){                       //untk baca sensor
  mpu.update();
-//  if(millis() - timer > 200){ // print data every second
-//    Serial.print(F("TEMPERATURE: "));Serial.println(mpu.getTemp());
-//    Serial.print(F("ACCELERO  X: "));Serial.print(mpu.getAccX());
-//    Serial.print("\tY: ");Serial.print(mpu.getAccY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getAccZ());
-//  
-//    Serial.print(F("GYRO      X: "));Serial.print(mpu.getGyroX());
-//    Serial.print("\tY: ");Serial.print(mpu.getGyroY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getGyroZ());
-//  
-//    Serial.print(F("ACC ANGLE X: "));Serial.print(mpu.getAccAngleX());
-    Serial.print("\tY: ");Serial.println(mpu.getAccAngleY());               // yg ini untuk miring
+  if(millis() - timer > 1000){ // print data every second
+    Serial.print(F("TEMPERATURE: "));Serial.println(mpu.getTemp());
+    Serial.print(F("ACCELERO  X: "));Serial.print(mpu.getAccX());
+    Serial.print("\tY: ");Serial.print(mpu.getAccY());
+    Serial.print("\tZ: ");Serial.println(mpu.getAccZ());
+  
+    Serial.print(F("GYRO      X: "));Serial.print(mpu.getGyroX());
+    Serial.print("\tY: ");Serial.print(mpu.getGyroY());
+    Serial.print("\tZ: ");Serial.println(mpu.getGyroZ());
+  
+    Serial.print(F("ACC ANGLE X: "));Serial.print(mpu.getAccAngleX());
+    Serial.print("\tY: ");Serial.println(mpu.getAccAngleY());
     
-    
-//    Serial.print(F("ANGLE     X: "));Serial.print(mpu.getAngleX());
-//    Serial.print("\tY: ");Serial.print(mpu.getAngleY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
+    Serial.print(F("ANGLE     X: "));Serial.print(mpu.getAngleX());
+    Serial.print("\tY: ");Serial.print(mpu.getAngleY());
+    Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
     Serial.println(F("=====================================================\n"));
     timer = millis();
-//  }
+  }
 gyrox = mpu.getAccAngleX();
 gyroy = mpu.getAccAngleY();
 gyroz = mpu.getAccZ();
 }
 
-void tampilan(){
+void tampilan(){          //untuk tampilan
     display.clearDisplay();
 
   display.setTextSize(1);             // Normal 1:1 pixel scale
@@ -261,21 +321,113 @@ void tampilan(){
   display.setCursor(0,16);             // Start at top-left corner
   display.print(F("Z : "));        // Start at top-left corner
   display.print(gyroz, DEC);
+  display.setCursor(0,24);             // Start at top-left corner
+  display.print(F("RPM : "));        // Start at top-left corner
+  display.print(b, DEC);
   display.display();
-  Serial.println("test oke");
+  Serial.println("display oke");
+  Serial.println(b);
 }
 
-void kontrol(){
+void kontrol(){                //untuk kontrol kemiringan
   if(sgiro==1){
     
   if(gyroy>50 or gyroy<-50){
     digitalWrite(pinkey, 0);
     Serial.println("terlalu miring");
-//    statuskemiringan=1;
+    statuskemiringan=1;
   }
   else {
     digitalWrite(pinkey, 1);
     Serial.println("sudah lurus");
   }
+  }
+}
+void baca_serial(){                  //bacaa serial
+  Serial.print("baca serial    ");
+   while (Serial2.available() > 0) {
+    a = Serial2.read();
+    b = Serial2.parseInt();
+    c = Serial2.read();
+    d = Serial2.parseInt();
+    e = Serial2.read();
+    f = Serial2.parseInt();
+    g = Serial2.read();  
+    h = Serial2.parseInt();  // disesuaikan dengan panjang data yg dikirim
+//    i = Serial2.read();
+//    j = Serial2.parseInt();
+//    k = Serial2.read();
+//    l = Serial2.parseInt();
+  if(d==4) d=0;
+  Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+//  Serial.print(i);
+//  Serial.print(j);    
+//  Serial.print(k);
+//  Serial.print(l);
+  Serial.print("");
+  Serial.println("");
+  }
+  
+  Serial.println("baca serial done");
+}
+
+void onboardtele(){
+  
+}
+
+void get_gps(){                   //untuk baca gps
+  Serial.println("gps on read");
+  if (Serial2.available() > 0) {
+    if (gps.encode(Serial2.read())) {
+      if (gps.location.isValid()) {
+        Serial.print(F("- latitude: "));
+        Serial.println(gps.location.lat(),6);
+
+        Serial.print(F("- longitude: "));
+        Serial.println(gps.location.lng(),6);
+
+        Serial.print(F("- altitude: "));
+        if (gps.altitude.isValid())
+          Serial.println(gps.altitude.meters());
+        else
+          Serial.println(F("INVALID"));
+      } else {
+        Serial.println(F("- location: INVALID"));
+      }
+
+      Serial.print(F("- speed: "));
+      if (gps.speed.isValid()) {
+        Serial.print(gps.speed.kmph());
+        Serial.println(F(" km/h"));
+      } else {
+        Serial.println(F("INVALID"));
+      }
+
+      Serial.print(F("- GPS date&time: "));
+      if (gps.date.isValid() && gps.time.isValid()) {
+        Serial.print(gps.date.year());
+        Serial.print(F("-"));
+        Serial.print(gps.date.month());
+        Serial.print(F("-"));
+        Serial.print(gps.date.day());
+        Serial.print(F(" "));
+        Serial.print(gps.time.hour());
+        Serial.print(F(":"));
+        Serial.print(gps.time.minute());
+        Serial.print(F(":"));
+        Serial.println(gps.time.second());
+      } else {
+        Serial.println(F("INVALID"));
+      }
+
+      Serial.println();
+    }
   }
 }

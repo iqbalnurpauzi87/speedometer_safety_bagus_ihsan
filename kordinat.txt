@@ -4,4 +4,8 @@ Latitude= -6.587866 Longitude= 106.785255
 
 -6.587866, 106.785255
 
-https://www.google.com/maps/@-6.587866, ,106.785255,17z?entry=ttu
+https://www.google.com/maps?q=-6.587866,106.785255
+
+
+
+latitude: -6.580799 longitude: 106.840288

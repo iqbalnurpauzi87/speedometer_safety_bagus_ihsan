@@ -21,9 +21,12 @@ const char* ssid = "qwer";
 const char* password = "qwerty12";
 
 // Initialize Telegram BOT
+//iqbal
+String BOTtoken = "1613209666:AAFT_0VnhMW6pquy4n2RhnVwOySyMNymTq0";   // your Bot Token (Get from Botfather)
+String CHAT_ID = "1586166338";
 
-String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
-String CHAT_ID = "5401629065";
+//String BOTtoken = "6288715492:AAHRQbsym6em-_LWRmebCLShLk8VQ6-8Y8M";   // your Bot Token (Get from Botfather)
+//String CHAT_ID = "5401629065";
 
 
 MPU6050 mpu(Wire);
@@ -49,11 +52,15 @@ WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
 
 // Checks for new messages every 1 second.
-int botRequestDelay = 10000;
+int botRequestDelay = 1000;
 unsigned long lastTimeBotRan;
 
 const int ledPin = 2;
 bool ledState = LOW;
+
+
+char a, c, e, g, i, k;
+int b, d, f, h, j, l, x;
 
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
@@ -102,6 +109,13 @@ void handleNewMessages(int numNewMessages) {
       bot.sendMessage(chat_id, welcome, "");
       sgiro=0;
          }
+         
+    if (text == "/lokasi") {
+ String welcome = "lokasi kendaraan anda di:.\n\n";
+      welcome += "https://www.google.com/maps?q=-6.587866,106.785255 \n";
+      bot.sendMessage(chat_id, welcome, "");
+      sgiro=0;
+         }
     if (text == "/machin_off") {
  String welcome = "SOS is HERE.\n\n";
       welcome += "hidupkan mesin? \n";
@@ -126,11 +140,48 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, "LED is OFF", "");
       }
     }
+    if (text == "/lokasi" or text == "lokasi") {
+      String welcome = "Lokasi kendaraan saat ini.\n\n";
+      welcome += "lokasi saat ini :   \n";
+      welcome += "https://maps.google.com/?q=";
+      welcome += a;
+      welcome += b;
+      welcome += c;
+      welcome += d; 
+      
+      welcome += ",";
+      welcome += f;
+      welcome += g;
+      welcome += h;
+//      
+      
+      welcome += " \n";
+ 
+ Serial.println("  ");  //
+ Serial.println("ini di pnggil lokasi");  //
+ Serial.println("  ");  //
+ Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+
+  
+ Serial.println("  ");  //
+ Serial.println("di pnggil lokasi selesai");  //
+ Serial.println("  ");  //
+        bot.sendMessage(chat_id, welcome, "");
+     
+    }
   }
 }
 
 void setup() {
   Serial.begin(115200);
+//  Serial2.begin(9600);  //
   Wire.begin();
  pinMode(pinkey, OUTPUT);
  pinMode(pinbuzzer, OUTPUT); 
@@ -190,7 +241,7 @@ void setup() {
 }
 
 void loop() {
-
+//baca_serial();
 readsensor();
 tampilan();
 kontrol();
@@ -222,26 +273,25 @@ kontrol();
 
 void readsensor(){
  mpu.update();
-//  if(millis() - timer > 200){ // print data every second
-//    Serial.print(F("TEMPERATURE: "));Serial.println(mpu.getTemp());
-//    Serial.print(F("ACCELERO  X: "));Serial.print(mpu.getAccX());
-//    Serial.print("\tY: ");Serial.print(mpu.getAccY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getAccZ());
-//  
-//    Serial.print(F("GYRO      X: "));Serial.print(mpu.getGyroX());
-//    Serial.print("\tY: ");Serial.print(mpu.getGyroY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getGyroZ());
-//  
-//    Serial.print(F("ACC ANGLE X: "));Serial.print(mpu.getAccAngleX());
-    Serial.print("\tY: ");Serial.println(mpu.getAccAngleY());               // yg ini untuk miring
+  if(millis() - timer > 1000){ // print data every second
+    Serial.print(F("TEMPERATURE: "));Serial.println(mpu.getTemp());
+    Serial.print(F("ACCELERO  X: "));Serial.print(mpu.getAccX());
+    Serial.print("\tY: ");Serial.print(mpu.getAccY());
+    Serial.print("\tZ: ");Serial.println(mpu.getAccZ());
+  
+    Serial.print(F("GYRO      X: "));Serial.print(mpu.getGyroX());
+    Serial.print("\tY: ");Serial.print(mpu.getGyroY());
+    Serial.print("\tZ: ");Serial.println(mpu.getGyroZ());
+  
+    Serial.print(F("ACC ANGLE X: "));Serial.print(mpu.getAccAngleX());
+    Serial.print("\tY: ");Serial.println(mpu.getAccAngleY());
     
-    
-//    Serial.print(F("ANGLE     X: "));Serial.print(mpu.getAngleX());
-//    Serial.print("\tY: ");Serial.print(mpu.getAngleY());
-//    Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
+    Serial.print(F("ANGLE     X: "));Serial.print(mpu.getAngleX());
+    Serial.print("\tY: ");Serial.print(mpu.getAngleY());
+    Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
     Serial.println(F("=====================================================\n"));
     timer = millis();
-//  }
+  }
 gyrox = mpu.getAccAngleX();
 gyroy = mpu.getAccAngleY();
 gyroz = mpu.getAccZ();
@@ -261,8 +311,12 @@ void tampilan(){
   display.setCursor(0,16);             // Start at top-left corner
   display.print(F("Z : "));        // Start at top-left corner
   display.print(gyroz, DEC);
+  display.setCursor(0,24);             // Start at top-left corner
+  display.print(F("RPM : "));        // Start at top-left corner
+  display.print(b, DEC);
   display.display();
-  Serial.println("test oke");
+  Serial.println("display oke");
+  Serial.println(b);
 }
 
 void kontrol(){
@@ -271,11 +325,50 @@ void kontrol(){
   if(gyroy>50 or gyroy<-50){
     digitalWrite(pinkey, 0);
     Serial.println("terlalu miring");
-//    statuskemiringan=1;
+    statuskemiringan=1;
   }
   else {
     digitalWrite(pinkey, 1);
     Serial.println("sudah lurus");
   }
   }
+}
+
+void baca_serial(){
+  Serial.print("baca serial    ");
+   while (Serial2.available() > 0) {
+    a = Serial2.read();
+    b = Serial2.parseInt();
+    c = Serial2.read();
+    d = Serial2.parseInt();
+    e = Serial2.read();
+    f = Serial2.parseInt();
+    g = Serial2.read();  
+    h = Serial2.parseInt();  // disesuaikan dengan panjang data yg dikirim
+//    i = Serial2.read();
+//    j = Serial2.parseInt();
+//    k = Serial2.read();
+//    l = Serial2.parseInt();
+  if(d==4) d=0;
+  Serial.print(a);  //
+  Serial.print(b);    //
+  Serial.print(c);    //
+  Serial.print(d);  //
+  Serial.print(e);  //
+  Serial.print(f);    
+  Serial.print(g);
+  Serial.print(h);    
+//  Serial.print(i);
+//  Serial.print(j);    
+//  Serial.print(k);
+//  Serial.print(l);
+  Serial.print("");
+  Serial.println("");
+  }
+  
+  Serial.println("baca serial done");
+}
+
+void onboardtele(){
+  
 }

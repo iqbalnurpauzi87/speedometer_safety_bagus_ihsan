@@ -8,8 +8,8 @@ int rpm;
 float rps;
 int oldtime=0;
 int Waktu;
-float keliling = 2*(22/7)*0.4064;
-float kecepatan;
+float keliling = 1.117; //2*V*R dalam CM konvert ke Meter
+float kecepatan, kecepatanrata;
 
 void isr() //interrupt service routine
 {
@@ -20,6 +20,7 @@ void setup() {
   mySerial.begin(9600);
   Serial.begin(115200);
   Serial.println("rpm and komnikasi serial on");
+   Serial.print("Keliling: ");
   Serial.println(keliling);
   attachInterrupt(0,isr,RISING);  //attaching the interrupt
 
@@ -31,7 +32,9 @@ detachInterrupt(0);           //detaches the interrupt
 Waktu=millis()-oldtime;        //finds the time 
 rpm=(rev/Waktu)*60000;         //calculates rpm
 rps=(rev/Waktu)*1000;         //calculates rps
-kecepatan = rpm/(60*keliling);
+kecepatan = rpm*60*keliling;
+kecepatan = kecepatan/1000;
+kecepatan = kecepatan+(kecepatan*0.6);
 oldtime=millis();             //saves the current time
 rev=0;
 
@@ -59,5 +62,5 @@ attachInterrupt(0,isr,RISING);
   mySerial.print("j");
   mySerial.print(66);
   Serial.println("kirim berhasil");
-  delay(1000);    
+//  delay(1000);    
 }
